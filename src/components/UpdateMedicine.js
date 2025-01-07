@@ -36,7 +36,8 @@ export default function UpdateMedicine() {
       medicine.category &&
       medicine.type &&
       medicine.price &&
-      medicine.stock
+      medicine.stock &&
+      medicine.expiry
     ) {
       const medDoc = doc(medicinesCollecitonRef, medicine.id);
       await updateDoc(medDoc, medicine);
@@ -165,6 +166,19 @@ export default function UpdateMedicine() {
                           setMedicine((prev) => ({ ...prev, stock: event.target.value }))
                         }
                         placeholder="Enter Medicine Stock"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="expiry">Medicine Expiry Date</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={medicine.expiry}
+                        id="expiry"
+                        onChange={(event) =>
+                          setMedicine((prev) => ({ ...prev, expiry: event.target.value }))
+                        }
+                        placeholder="Enter Medicine Expiry Date"
                       />
                     </div>
                   </div>

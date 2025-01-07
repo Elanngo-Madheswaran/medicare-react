@@ -9,19 +9,32 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 export default function Inventory() {
   var counter = 1;
   const [medicines, setMedicines] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const medicinesCollectionRef = collection(db, "medicine_inventory");
+
   const getTypes = async () => {
     const data = await getDocs(medicinesCollectionRef);
     setMedicines(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
+
   const handleDeleteButton = async (id) => {
     const medDoc = doc(medicinesCollectionRef, id);
     await deleteDoc(medDoc);
     getTypes();
   };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   useEffect(() => {
     getTypes();
   }, []);
+
+  const filteredMedicines = medicines.filter((medicine) =>
+    medicine.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <AdminHeader />
@@ -40,6 +53,13 @@ export default function Inventory() {
                         Add new Medicine
                       </Link>{" "}
                     </h4>
+                    <input
+                      type="text"
+                      placeholder="Search by medicine name"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      className="form-control"
+                    />
                   </div>
                   <div className="card-body ">
                     <div className="table-full-width px-5 py-4 table-striped">
@@ -54,13 +74,14 @@ export default function Inventory() {
                             <th>Medicine Type</th>
                             <th>Medicine Price</th>
                             <th>Stock</th>
+                            <th>Expiry Date</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {medicines.map((medicine) => {
+                          {filteredMedicines.map((medicine) => {
                             return (
-                              <tr>
+                              <tr key={medicine.id}>
                                 <td>{counter++}</td>
                                 <td>
                                   {medicine.name} <sup>{medicine.power}</sup>
@@ -69,6 +90,7 @@ export default function Inventory() {
                                 <td>{medicine.type}</td>
                                 <td>₹{medicine.price}</td>
                                 <td>{medicine.stock}</td>
+                                <td>{medicine.expiryDate}</td>
                                 <td className="td-actions">
                                   <div className="form-button-action">
                                     <Link to="/updatemedicine">

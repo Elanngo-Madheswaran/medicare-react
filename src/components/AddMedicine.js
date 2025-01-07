@@ -34,6 +34,7 @@ export default function AddMedicine() {
     type: "",
     price: "",
     stock: "",
+    expiry: "", // Added expiry field
   });
   const handleAddMedicine = async () => {
     if (
@@ -42,7 +43,8 @@ export default function AddMedicine() {
       medicine.category &&
       medicine.type &&
       medicine.price &&
-      medicine.stock
+      medicine.stock &&
+      medicine.expiry // Added expiry field validation
     ) {
       setErrorMsg("");
       await addDoc(medicinesCollectionRef, {
@@ -52,6 +54,7 @@ export default function AddMedicine() {
         type: medicine.type,
         price: medicine.price,
         stock: medicine.stock,
+        expiry: medicine.expiry, // Added expiry field
       });
       setSuccessMsg("Medicine added successfully!");
       setTimeout(() => {
@@ -161,6 +164,19 @@ export default function AddMedicine() {
                           setMedicine((prev) => ({ ...prev, stock: event.target.value }))
                         }
                         placeholder="Enter Medicine Stock"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="expiry">Expiry Date</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={medicine.expiry}
+                        id="expiry"
+                        onChange={(event) =>
+                          setMedicine((prev) => ({ ...prev, expiry: event.target.value }))
+                        }
+                        placeholder="Enter Expiry Date"
                       />
                     </div>
                   </div>
